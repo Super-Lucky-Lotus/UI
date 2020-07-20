@@ -3,10 +3,12 @@ package com.example.superluckylotus;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Intent;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,11 @@ import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 
 /**
  * @version: 1.0
@@ -94,9 +101,13 @@ public class NearFragment extends Fragment {
                     index = 1;
                 }
                 playVideo(position);
-
             }
         });
+
+        MyLocationListener myLocationListener = new MyLocationListener();
+        BDLocation bdLocation = new BDLocation();
+        //myLocationListener.initLocation();
+        myLocationListener.onReceiveLocation(bdLocation);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
@@ -231,4 +242,37 @@ public class NearFragment extends Fragment {
             }
         }
     }
+
+//利用百度地图API获取定位，显示所在城市名
+    public class MyLocationListener implements BDLocationListener{
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            //获取当前位置的经度
+            double longitude = bdLocation.getLongitude();
+            //获取当前位置的纬度
+            double latitude = bdLocation.getLatitude();
+
+            Log.i("Tag", "bdLocation.getAddStr()=" + bdLocation.getAddrStr());
+            Log.i("TAG", "bdLocation.getCity=" + bdLocation.getCity());
+
+            int i = bdLocation.getLocType();
+        }
+
+        private void initLocation(){
+            LocationClientOption option = new LocationClientOption();
+            //设置为true，允许获得当前位置信息
+            option.setIsNeedAddress(true);
+            option.setOpenGps(true);
+            //设置定位模式设为高精度，定位模式可选高精度、低功耗、仅设备
+            option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+            //设置返回的定位结果坐标系
+            option.setCoorType("gcj02");
+            //设置发起定位请求的时间间隔为10000ms
+            option.setScanSpan(10000);
+
+            LocationClient locationClient = null;
+            locationClient.setLocOption(option);
+        }
+    }
+
 }
