@@ -1,7 +1,9 @@
 package com.example.superluckylotus;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.media.MediaPlayer;
@@ -25,6 +27,10 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+
+//import com.example.superluckylotus.MainActivity.MyLocationListener;
+
+
 
 /**
  * @version: 1.0
@@ -51,6 +57,15 @@ import com.baidu.location.LocationClientOption;
  * @packageName:com.example.superluckylotus
  * @description: 修改打赏功能，增加分享弹窗
  * @data: 2020.07.20 18:19
+ **/
+
+/**
+ * @version: 4.0
+ * @author: 张贝琦
+ * @className: NearFragment
+ * @packageName:com.example.superluckylotus
+ * @description: 附近界面
+ * @data: 2020.07.20 20:14
  **/
 
 public class NearFragment extends Fragment {
@@ -104,11 +119,14 @@ public class NearFragment extends Fragment {
             }
         });
 
-        MyLocationListener myLocationListener = new MyLocationListener();
+
+       /* MainActivity mainActivity = new MainActivity();
         BDLocation bdLocation = new BDLocation();
-        //myLocationListener.initLocation();
-        myLocationListener.onReceiveLocation(bdLocation);
+        mainActivity.myLocationListener.initLocation();
+        mainActivity.myLocationListener.onReceiveLocation(bdLocation);*/
     }
+
+
 
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         //添加封面
@@ -243,36 +261,63 @@ public class NearFragment extends Fragment {
         }
     }
 
-//利用百度地图API获取定位，显示所在城市名
+
+
+/*//利用百度地图API获取定位，显示所在城市名
     public class MyLocationListener implements BDLocationListener{
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-            //获取当前位置的经度
-            double longitude = bdLocation.getLongitude();
-            //获取当前位置的纬度
-            double latitude = bdLocation.getLatitude();
+            if(bdLocation!=null){
+                LocationClientOption option = new LocationClientOption();
+                //设置需要地址信息
+                option.setIsNeedAddress(true);
+                //设置GPS打开
+                option.setOpenGps(true);
+                //设置定位模式设为高精度，定位模式可选高精度、低功耗、仅设备
+                option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+                //设置返回的定位结果坐标系
+                option.setCoorType("gcj02");
+                //设置发起定位请求的时间间隔为0ms，即仅定位一次（每次进入附近页面就进行定位）
+                option.setScanSpan(0);
 
-            Log.i("Tag", "bdLocation.getAddStr()=" + bdLocation.getAddrStr());
-            Log.i("TAG", "bdLocation.getCity=" + bdLocation.getCity());
+                LocationClient locationClient = new LocationClient(getActivity().getApplicationContext());
+                locationClient.setLocOption(option);
 
-            int i = bdLocation.getLocType();
+
+                //获取当前位置的经度
+                double longitude = bdLocation.getLongitude();
+                //获取当前位置的纬度
+                double latitude = bdLocation.getLatitude();
+
+                Log.i("Tag", "bdLocation.getAddStr()=" + bdLocation.getAddrStr());
+                Log.i("TAG", "bdLocation.getCity=" + bdLocation.getCity());
+
+                int i = bdLocation.getLocType();
+            }
+            else{
+                Log.i("TAG","bdLocation" + "null");
+            }
         }
 
         private void initLocation(){
             LocationClientOption option = new LocationClientOption();
-            //设置为true，允许获得当前位置信息
+            //设置需要地址信息
             option.setIsNeedAddress(true);
+            //设置GPS打开
             option.setOpenGps(true);
             //设置定位模式设为高精度，定位模式可选高精度、低功耗、仅设备
             option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
             //设置返回的定位结果坐标系
             option.setCoorType("gcj02");
-            //设置发起定位请求的时间间隔为10000ms
-            option.setScanSpan(10000);
+            //设置发起定位请求的时间间隔为0ms，即仅定位一次（每次进入附近页面就进行定位）
+            option.setScanSpan(0);
 
-            LocationClient locationClient = null;
+            LocationClient locationClient = new LocationClient(getActivity().getApplicationContext());
             locationClient.setLocOption(option);
         }
-    }
+
+
+    }*/
+
 
 }

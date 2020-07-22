@@ -13,6 +13,14 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+
+import android.util.Log;
+
 /**
  * @version: 1.0
  * @author: 宋佳容
@@ -38,6 +46,11 @@ public class MainActivity extends AppCompatActivity  {
     private Button me_Btn;
     private Button shoot_Btn;
     private Button earth_Btn;
+
+    public  LocationClient locationClient = null;
+    public MyLocationListener myLocationListener = new MyLocationListener();
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +113,15 @@ public class MainActivity extends AppCompatActivity  {
         });
 
 
+        //声明LocationClient类
+        locationClient = new LocationClient(getApplicationContext());
+        //注册监听函数
+        locationClient.registerLocationListener(myLocationListener);
+
+        BDLocation bdLocation = new BDLocation();
+        locationClient.start();
+       // myLocationListener.initLocation();
+        myLocationListener.onReceiveLocation(bdLocation);
     }
 
     private void setListeners(){
@@ -121,4 +143,68 @@ public class MainActivity extends AppCompatActivity  {
 
         }
     }
+
+
+    //利用百度地图API获取定位，显示所在城市名
+    public class MyLocationListener implements BDLocationListener{
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+
+            if(bdLocation!=null){
+                LocationClientOption option = new LocationClientOption();
+                //设置需要地址信息
+                option.setIsNeedAddress(true);
+                //设置GPS打开
+                option.setOpenGps(true);
+                //设置定位模式设为高精度，定位模式可选高精度、低功耗、仅设备
+                option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+                //设置返回的定位结果坐标系
+                option.setCoorType("gcj02");
+                //设置发起定位请求的时间间隔为0ms，即仅定位一次（每次进入附近页面就进行定位）
+                option.setScanSpan(1000);
+
+                LocationClient locationClient = new LocationClient(getApplicationContext());
+                locationClient.setLocOption(option);
+
+
+
+
+                //获取当前位置的经度
+                double longitude = bdLocation.getLongitude();
+                //获取当前位置的纬度
+                double latitude = bdLocation.getLatitude();
+
+                Log.i("Tag", "bdLocation.getAddStr()=" + bdLocation.getAddrStr());
+                Log.i("TAG", "bdLocation.getCity=" + bdLocation.getCity());
+
+                int i = bdLocation.getLocType();
+            }
+            else{
+                Log.i("TAG","bdLocation" + "null");
+            }
+        }
+
+        public void initLocation(){
+            LocationClientOption option = new LocationClientOption();
+            //设置需要地址信息
+            option.setIsNeedAddress(true);
+            //设置GPS打开
+            option.setOpenGps(true);
+            //设置定位模式设为高精度，定位模式可选高精度、低功耗、仅设备
+            option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+            //设置返回的定位结果坐标系
+            option.setCoorType("gcj02");
+            //设置发起定位请求的时间间隔为0ms，即仅定位一次（每次进入附近页面就进行定位）
+            option.setScanSpan(0);
+
+
+            locationClient.setLocOption(option);
+        }
+
+
+    }
+
+
+
+
 }

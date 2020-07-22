@@ -28,6 +28,11 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+
 /**
  * @version: 1.0
  * @author: 宋佳容
@@ -158,7 +163,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
         }
+
     }
+
+
+
+
+
 
 
 }
